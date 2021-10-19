@@ -1,4 +1,4 @@
-import * as express from "express";
+import express from "express";
 import {
     valuationObjects_create, valuationObjects_delete,
     valuationObjects_get_all,

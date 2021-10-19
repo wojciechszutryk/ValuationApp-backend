@@ -1,5 +1,6 @@
-import * as mongoose from "mongoose";
+import  mongoose from "mongoose";
 import {Works} from "../models/works";
+import {ValuationObjects} from "../models/valuationObjects";
 import { NextFunction,Request, Response } from 'express';
 
 const works_get_all = (req: Request, res: Response, next: NextFunction) => {
@@ -57,6 +58,36 @@ const works_create = (req: Request, res: Response, next: NextFunction) => {
     });
 }
 
+const works_get_valuationObjects = (req: Request, res: Response, next: NextFunction) => {
+    ValuationObjects.find({workId: req.params.id})
+        .select('_id workId name parametersValues area price isForValuation')
+        .exec()
+        .then(docs => {
+            const works = docs.map(doc => {
+                return{
+                    id: doc._id,
+                    workId: doc.workId,
+                    name: doc.name,
+                    parametersValues: doc.parametersValues,
+                    price: doc.price,
+                    area: doc.area,
+                    isForValuation: doc.isForValuation,
+                    request:{
+                        type: 'GET',
+                        url: process.env.SERVER_URL+'valuationObjects/'+doc._id
+                    }
+                }
+            });
+            res.status(200).json(works);
+        })
+        .catch((err:any) => {
+            console.log(err);
+            res.status(500).json({
+                error: err,
+            });
+        });
+}
+
 const works_get_single = (req: Request, res: Response, next: NextFunction) => {
     Works.findById(req.params.id)
         .select('parameters _id date')
@@ -109,4 +140,4 @@ const works_delete = (req: Request, res: Response, next: NextFunction) => {
         });
 }
 
-export {works_get_all, works_create, works_get_single, works_delete}
+export {works_get_all, works_create, works_get_single, works_delete, works_get_valuationObjects}
