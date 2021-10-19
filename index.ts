@@ -11,6 +11,7 @@ const server = express();
 
 import {router as worksRouter} from "./routers/works";
 import {router as valuationObjectsRouter} from "./routers/valuationObjects";
+import {router as usersRouter} from "./routers/users";
 
 mongoose.connect('mongodb+srv://admin:'+process.env.MONGODB_PW+'@cluster0.ooyuy.mongodb.net/valuationApp?retryWrites=true&w=majority', {
     useNewUrlParser: true,
@@ -38,6 +39,7 @@ server.use((req, res, next)=>{
 
 server.use('/works', worksRouter);
 server.use('/valuationObjects', valuationObjectsRouter);
+server.use('/users', usersRouter);
 
 server.use((req, res, next) => {
     const error =new Error('not found');
