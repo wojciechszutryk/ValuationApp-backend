@@ -48,7 +48,7 @@ const valuationObjects_create = (req: Request, res: Response, next: NextFunction
         console.log(result)
         res.status(201).json({
             message: 'Created valuationObject successfully',
-            createdBudget: {
+            createdValuationObject: {
                 id: result._id,
                 workId: result.workId,
                 name: result.name,

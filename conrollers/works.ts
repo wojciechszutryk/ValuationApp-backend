@@ -42,7 +42,7 @@ const works_create = (req: Request, res: Response, next: NextFunction) => {
         console.log(result)
         res.status(201).json({
             message: 'Created Work successfully',
-            createdBudget: {
+            createdWork: {
                 id: result._id,
                 userId: result.userId,
                 parameters: result.parameters,
@@ -130,17 +130,27 @@ const works_delete = (req: Request, res: Response, next: NextFunction) => {
     Works.remove({ _id: req.params.id })
         .exec()
         .then(() => {
-            res.status(200).json({
-                message: 'work deleted',
-                request: {
-                    type: 'POST',
-                    url: process.env.SERVER_URL + 'works',
-                    body: {
-                        parameters: 'Array',
-                        date: 'String'
-                    }
-                }
-            });
+            ValuationObjects.remove({ workId: req.params.id })
+                .exec()
+                .then(() => {
+                    res.status(200).json({
+                        message: 'work deleted',
+                        request: {
+                            type: 'POST',
+                            url: process.env.SERVER_URL + 'works',
+                            body: {
+                                parameters: 'Array',
+                                date: 'String'
+                            }
+                        }
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        error: err,
+                    });
+                });
         })
         .catch(err => {
             console.log(err);

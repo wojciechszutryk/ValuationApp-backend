@@ -7,9 +7,9 @@ import {
 import {checkAuth} from "../middlewares/check-auth";
 const router = express.Router();
 
-router.get('/', valuationObjects_get_all);
-router.post('/', valuationObjects_create);
-router.get(`/:id`, valuationObjects_get_single);
-router.delete(`/:id`, valuationObjects_delete);
+router.get('/', checkAuth, valuationObjects_get_all);
+router.post('/', checkAuth, valuationObjects_create);
+router.get(`/:id`, checkAuth, valuationObjects_get_single);
+router.delete(`/:id`, checkAuth, valuationObjects_delete);
 
 export {router};
