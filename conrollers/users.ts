@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { Users } from '../models/users';
+import {ValuationObjects} from "../models/valuationObjects";
 import { Works } from '../models/works';
 import mongoose from 'mongoose'
 import bcrypt from 'bcrypt'
@@ -93,12 +94,54 @@ const users_login = (req: Request, res: Response) => {
 };
 
 const users_delete = (req: Request, res: Response) => {
+    console.log(req.params)
     Users.remove({ _id: req.params.id })
         .exec()
-        .then(result => {
-            res.status(200).json({
-                message: 'User deleted',
-            })
+        .then(() => {
+            Works.find({ userId: req.params.id })
+                .select('workId')
+                .exec()
+                .then((result) => {
+                    result.forEach((r) => {
+                        Works.remove({ _id: r._id })
+                            .exec()
+                            .then(() => {
+                                ValuationObjects.remove({ workId: r._id })
+                                    .exec()
+                                    .then(() => {
+                                        res.status(200).json({
+                                            message: 'work deleted',
+                                            request: {
+                                                type: 'POST',
+                                                url: process.env.SERVER_URL + 'works',
+                                                body: {
+                                                    parameters: 'Array',
+                                                    date: 'String'
+                                                }
+                                            }
+                                        });
+                                    })
+                                    .catch(err => {
+                                        console.log(err);
+                                        res.status(500).json({
+                                            error: err,
+                                        });
+                                    });
+                            })
+                            .catch(err => {
+                                console.log(err);
+                                res.status(500).json({
+                                    error: err,
+                                });
+                            });
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        error: err,
+                    });
+                });
         })
         .catch(err => {
             console.log(err);
