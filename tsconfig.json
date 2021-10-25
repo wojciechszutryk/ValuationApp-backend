@@ -1,11 +1,15 @@
 {
+  "include": [
+    "src/**/*.ts"
+  ],
   "compilerOptions": {
     "target": "es6",
     "module": "CommonJS",
     "rootDir": "./",
     "outDir": "./build",
     "esModuleInterop": true,
-    "strict": true
+    "strict": true,
+    "sourceMap": true
   },
   "typeRoots": [
     "./node_module/@types",
